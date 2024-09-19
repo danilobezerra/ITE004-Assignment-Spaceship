@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7114512760330304252}
   - component: {fileID: 377583835568603430}
   - component: {fileID: -8370306090929222982}
+  - component: {fileID: 1523643253769847770}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Untagged
@@ -97,5 +98,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbab164c025612a459d168bec0535d33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 4953266769923758039, guid: 257a9db8d48a163429e55f57689c7d1a, type: 3}
   speed: 7.5
+--- !u!114 &1523643253769847770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3525770305516420013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40cb5973cf23d5647b3ba7b0ea62ffa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 4953266769923758039, guid: 257a9db8d48a163429e55f57689c7d1a, type: 3}
+  spaceship: {fileID: -8370306090929222982}
