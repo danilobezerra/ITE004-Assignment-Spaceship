@@ -40,9 +40,7 @@ public class Spaceship : MonoBehaviour
     {
         // TODO: Controlar velocidade com base no estado da nave
         return speed;
-    }
-
-    
+    }  
 
     void Start() {
         var height = Camera.main.orthographicSize * 2f;
