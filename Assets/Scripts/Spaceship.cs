@@ -4,6 +4,8 @@ public class Spaceship : MonoBehaviour
 {
     public float speed;
 
+    public int maxAmmo = 10;
+    private int currentAmmo;
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
 
@@ -32,8 +34,15 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
-        _gunController.Fire();
+        if (currentAmmo > 0)
+        {
+            _gunController.Fire();
+            currentAmmo--; 
+        }
+        else
+        {
+            Debug.Log("Sem munição! Por favor, recarregue...");
+        }
     }
 
     public float GetSpeed()
@@ -42,13 +51,32 @@ public class Spaceship : MonoBehaviour
         return speed;
     }  
 
+    public void Reload()
+    {
+        currentAmmo = maxAmmo; // Recarrega a munição
+        Debug.Log("Munição recarregada!"); // Mensagem opcional
+    }
+
+    public int GetCurrentAmmo() // Adicionando um getter
+    {
+        return currentAmmo;
+    }
+
     void Start() {
+        currentAmmo = maxAmmo;
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    void Update() {
+        // Verifica se a tecla R foi pressionada para recarregar
+        if (Input.GetKeyDown(KeyCode.R)) {
+            Reload(); // Chama a função de recarga
+        }
     }
 
     void LateUpdate() {

@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 7.5
+  maxAmmo: 10
 --- !u!114 &1523643253769847770
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class SpaceshipEngine : MonoBehaviour,
-    IMovementController, IGunController
+public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunController
 {
-    public Projectile projectilePrefab;
+    public Projectile projectilePrefab;      // Projétil normal
+    public BigProjectile bigProjectilePrefab;   // Projétil maior
     public Spaceship spaceship;
+
+    public float bigProjectileCooldown = 45f; // Tempo de cooldown para o projétil maior
+    private float lastBigProjectileTime;      // Tempo do último disparo do projétil maior
 
     public void OnEnable()
     {
@@ -16,16 +17,32 @@ public class SpaceshipEngine : MonoBehaviour,
 
     public void Update()
     {
-        if (Input.GetButton("Horizontal")) {
+        // Movimentação
+        if (Input.GetButton("Horizontal"))
+        {
             spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
         }
 
-        if (Input.GetButton("Vertical")) {
+        if (Input.GetButton("Vertical"))
+        {
             spaceship.MoveVertically(Input.GetAxis("Vertical"));
         }
 
-        if (Input.GetButtonDown("Fire1")) {
+        // Disparo normal com a tecla espaço
+        if (Input.GetButtonDown("Fire1"))
+        {
             spaceship.ApplyFire();
+        }
+
+        // Disparo do projétil maior com a tecla 'Z' e verificação de cooldown
+        if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastBigProjectileTime + bigProjectileCooldown)
+        {
+            FireBigProjectile();
+            lastBigProjectileTime = Time.time; // Atualiza o tempo do último disparo
+        }
+        if (Input.GetKeyDown(KeyCode.Z) && Time.time < bigProjectileCooldown) 
+        {
+              Debug.Log("Carregando especial...");
         }
     }
 
@@ -43,7 +60,21 @@ public class SpaceshipEngine : MonoBehaviour,
 
     public void Fire()
     {
-        Instantiate(projectilePrefab,
-            transform.position, Quaternion.identity);
+        // Disparo do projétil normal
+        Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+    }
+
+    public void FireBigProjectile()
+    {
+        // Verifica se o prefab do projétil maior está atribuído
+        if (bigProjectilePrefab != null)
+        {
+            Debug.Log("Disparando projétil maior!");
+            Instantiate(bigProjectilePrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError("Prefab do projétil maior não atribuído!");
+        }
     }
 }
