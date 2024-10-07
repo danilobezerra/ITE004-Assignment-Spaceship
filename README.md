@@ -1,4 +1,4 @@
-Excerpt from assignment description:
+Excerpt from assignment description (PT-BR):
 
 # Requisitos:
 
