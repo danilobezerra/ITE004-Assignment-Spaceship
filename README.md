@@ -15,6 +15,6 @@ Excerpt from assignment description:
     - A velocidade de movimentação do jogador deve ser correlacionada ao estado da nave (Se a nave estiver avariada, deve ter menor velocidade).
 6. Melhorias estéticas:
     - Adicione melhorias estéticas ao projeto. Essas melhorias podem incluir, mas não se limitam a:
-        + Sprites e animações: para personagens, armas e efeitos de tiros.
-        + Efeitos sonoros: para tiros, recarregamento, movimentação e colisões.
-        + Efeitos visuais: como partículas para os disparos, explosões, e feedback de recarregamento ou hits.
+        + **Sprites e animações**: para personagens, armas e efeitos de tiros.
+        + **Efeitos sonoros**: para tiros, recarregamento, movimentação e colisões.
+        + **Efeitos visuais**: como partículas para os disparos, explosões, e feedback de recarregamento ou hits.
