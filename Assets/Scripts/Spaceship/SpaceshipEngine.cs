@@ -7,11 +7,13 @@ public class SpaceshipEngine : MonoBehaviour,
 {
     public Projectile projectilePrefab;
     public Spaceship spaceship;
+    private int ammo;
 
     public void OnEnable()
     {
         spaceship.SetMovementController(this);
         spaceship.SetGunController(this);
+	ammo = 30;
     }
 
     public void Update()
@@ -26,6 +28,10 @@ public class SpaceshipEngine : MonoBehaviour,
 
         if (Input.GetButtonDown("Fire1")) {
             spaceship.ApplyFire();
+        }
+
+	if (Input.GetButtonDown("Fire2")) {
+            Reload();
         }
     }
 
@@ -43,7 +49,19 @@ public class SpaceshipEngine : MonoBehaviour,
 
     public void Fire()
     {
-        Instantiate(projectilePrefab,
-            transform.position, Quaternion.identity);
+	if( ammo > 0 ){
+            Instantiate(projectilePrefab,
+            	transform.position, Quaternion.identity);
+	    ammo--;
+	    Debug.Log( "Ammo: " + ammo );
+	}
+	else
+	    Debug.Log( "Out of ammo" );
+    }
+
+    public void Reload()
+    {
+	ammo = 30;
+	Debug.Log( "Ammo: " + ammo );
     }
 }
