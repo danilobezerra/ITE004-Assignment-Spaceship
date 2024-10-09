@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class BigProjectile : MonoBehaviour
 {
     public float speed = 25f;
+    public int damage = 1;
 
     void Update()
     {
@@ -14,3 +15,4 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 }
+

@@ -1,8 +1,10 @@
 using UnityEngine;
 
-public class BigProjectile : MonoBehaviour
+public class Projectile : MonoBehaviour
 {
+
     public float speed = 25f;
+    public int damage = 1;  // Adiciona o campo 'damage' que será usado para causar dano
 
     void Update()
     {
@@ -13,5 +15,5 @@ public class BigProjectile : MonoBehaviour
     {
         Destroy(gameObject);
     }
-}
 
+}

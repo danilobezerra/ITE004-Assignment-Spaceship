@@ -5,8 +5,9 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
     public Projectile projectilePrefab;      // Projétil normal
     public BigProjectile bigProjectilePrefab;   // Projétil maior
     public Spaceship spaceship;
+    [SerializeField] float fireRate = 0.5f, nextFire;
 
-    public float bigProjectileCooldown = 45f; // Tempo de cooldown para o projétil maior
+    public float bigProjectileCooldown = 5.0f; // Tempo de cooldown para o projétil maior
     private float lastBigProjectileTime;      // Tempo do último disparo do projétil maior
 
     public void OnEnable()
@@ -15,37 +16,37 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
         spaceship.SetGunController(this);
     }
 
-    public void Update()
+   public void Update()
+{
+    // Movimentação
+    if (Input.GetButton("Horizontal"))
     {
-        // Movimentação
-        if (Input.GetButton("Horizontal"))
-        {
-            spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
-        }
-
-        if (Input.GetButton("Vertical"))
-        {
-            spaceship.MoveVertically(Input.GetAxis("Vertical"));
-        }
-
-        // Disparo normal com a tecla espaço
-        if (Input.GetButtonDown("Fire1"))
-        {
-            spaceship.ApplyFire();
-        }
-
-        // Disparo do projétil maior com a tecla 'Z' e verificação de cooldown
-        if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastBigProjectileTime + bigProjectileCooldown)
-        {
-            FireBigProjectile();
-            lastBigProjectileTime = Time.time; // Atualiza o tempo do último disparo
-        }
-        if (Input.GetKeyDown(KeyCode.Z) && Time.time < bigProjectileCooldown) 
-        {
-              Debug.Log("Carregando especial...");
-        }
+        spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
     }
 
+    if (Input.GetButton("Vertical"))
+    {
+        spaceship.MoveVertically(Input.GetAxis("Vertical"));
+    }
+
+    // Disparo normal com a tecla espaço, respeitando o fireRate
+    if (Input.GetButtonDown("Fire1") && Time.time >= nextFire)
+    {
+        spaceship.ApplyFire();
+        nextFire = Time.time + fireRate; // Atualiza o próximo tempo de disparo
+    }
+
+    // Disparo do projétil maior com a tecla 'Z' e verificação de cooldown
+    if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastBigProjectileTime + bigProjectileCooldown)
+    {
+        FireBigProjectile();
+        lastBigProjectileTime = Time.time; // Atualiza o tempo do último disparo
+    }
+    else if (Input.GetKeyDown(KeyCode.Z) && Time.time < lastBigProjectileTime + bigProjectileCooldown)
+    {
+        Debug.Log("Carregando especial...");
+    }
+}
     public void MoveHorizontally(float x)
     {
         var horizontal = Time.deltaTime * x;
@@ -61,7 +62,8 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
     public void Fire()
     {
         // Disparo do projétil normal
-        Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+       Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        nextFire = Time.time + fireRate;
     }
 
     public void FireBigProjectile()
