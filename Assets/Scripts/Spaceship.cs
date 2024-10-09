@@ -3,6 +3,7 @@ using UnityEngine;
 public class Spaceship : MonoBehaviour
 {
     public float speed;
+    private int ammo;
 
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
@@ -32,8 +33,17 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
-        _gunController.Fire();
+	if( ammo > 0 ){
+	    ammo--;
+            _gunController.Fire();
+	}
+	Debug.Log( "Ammo: " + ammo );
+    }
+
+    public void Reload()
+    {
+	ammo = 30;
+        Debug.Log( "Ammo: " + ammo );
     }
 
     public float GetSpeed()
@@ -46,6 +56,7 @@ public class Spaceship : MonoBehaviour
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
+	ammo = 30;
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
