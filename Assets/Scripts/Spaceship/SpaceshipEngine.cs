@@ -58,10 +58,4 @@ public class SpaceshipEngine : MonoBehaviour,
         Instantiate(projectilePrefab,
             transform.position, Quaternion.identity);
     }
-
-    public void BurstFire()
-    {
-        Instantiate(projectilePrefab,
-            transform.position, Quaternion.identity);
-    }
 }

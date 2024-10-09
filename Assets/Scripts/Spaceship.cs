@@ -95,9 +95,11 @@ public class Spaceship : MonoBehaviour
 	    burstCooldown -= Time.deltaTime;
 	}
 
-	if( burstOn && burstCooldown <= 0.0F ){
-	    _gunController.BurstFire();
-	    burstCooldown = 0.1F;
+	if( burstOn && burstCooldown <= 0.0F && ammo > 0 ){
+	    ammo--;
+	    _gunController.Fire();
+	    burstCooldown = 0.08F;
+	    Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
 	}
     }
 }
