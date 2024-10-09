@@ -1,9 +1,11 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class Spaceship : MonoBehaviour
 {
     public float speed;
-
+    public int maxAmmo = 10;
+    private int currentAmmo;
+    public int health = 3;  // Quantidade de vidas da nave
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
 
@@ -32,23 +34,69 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
-        _gunController.Fire();
+        if (currentAmmo > 0)
+        {
+            _gunController.Fire();
+            currentAmmo--; 
+        }
+        else
+        {
+            Debug.Log("Sem munição! Por favor, recarregue...");
+        }
     }
 
     public float GetSpeed()
     {
-        // TODO: Controlar velocidade com base no estado da nave
         return speed;
     }  
 
+    public void Reload()
+    {
+        currentAmmo = maxAmmo; // Recarrega a munição
+        Debug.Log("Munição recarregada!"); // Mensagem opcional
+    }
+
+    public int GetCurrentAmmo() // Adicionando um getter
+    {
+        return currentAmmo;
+    }
+
+    public void RestartGame()
+{
+    // Recarrega a cena atual
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+}
+
+    // Função para reduzir a vida da nave e aplicar o dano
+    public void TakeDamage(int damage)
+    {
+        health -= damage; // Reduz a vida da nave
+        Debug.Log("A nave foi atingida! Vida restante: " + health);
+        speed *= 0.7f;
+        
+        if (health <= 0)
+        {
+            Debug.Log("A nave foi destruída!");
+            Destroy(gameObject);  // Destroi a nave se a vida chegar a 0
+            RestartGame();
+        }
+    }
+
     void Start() {
+        currentAmmo = maxAmmo;
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    void Update() {
+        // Verifica se a tecla R foi pressionada para recarregar
+        if (Input.GetKeyDown(KeyCode.R)) {
+            Reload(); // Chama a função de recarga
+        }
     }
 
     void LateUpdate() {
