@@ -3,6 +3,9 @@ using UnityEngine;
 public class Spaceship : MonoBehaviour
 {
     public float speed;
+    private int ammo;
+    private float burstCooldown;
+    private bool burstOn;
 
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
@@ -32,8 +35,29 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
-        _gunController.Fire();
+	if( ammo > 0 ){
+	    ammo--;
+            _gunController.Fire();
+	}
+	Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
+    }
+
+    public void SwitchBurstFireOn()
+    {
+	burstOn = true;
+	Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
+    }
+
+    public void SwitchBurstFireOff()
+    {
+	burstOn = false;
+	Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
+    }
+
+    public void Reload()
+    {
+	ammo = 30;
+        Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
     }
 
     public float GetSpeed()
@@ -46,6 +70,9 @@ public class Spaceship : MonoBehaviour
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
+	ammo = 30;
+	burstCooldown = 0.0f;
+	burstOn = false;
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -63,5 +90,16 @@ public class Spaceship : MonoBehaviour
             _cameraBounds.min.y + spriteHeight, _cameraBounds.max.y - spriteHeight);
 
         transform.position = newPosition;
+
+	if( burstCooldown > 0.0F ){
+	    burstCooldown -= Time.deltaTime;
+	}
+
+	if( burstOn && burstCooldown <= 0.0F && ammo > 0 ){
+	    ammo--;
+	    _gunController.Fire();
+	    burstCooldown = 0.08F;
+	    Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
+	}
     }
 }

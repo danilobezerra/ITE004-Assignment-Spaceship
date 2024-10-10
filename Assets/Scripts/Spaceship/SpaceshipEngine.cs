@@ -27,6 +27,18 @@ public class SpaceshipEngine : MonoBehaviour,
         if (Input.GetButtonDown("Fire1")) {
             spaceship.ApplyFire();
         }
+
+	if (Input.GetButtonDown("Fire2")) {
+            spaceship.Reload();
+        }
+
+	if (Input.GetButtonDown("Fire3")) {
+            spaceship.SwitchBurstFireOn();
+        }
+
+	if (Input.GetButtonUp("Fire3")) {
+            spaceship.SwitchBurstFireOff();
+        }
     }
 
     public void MoveHorizontally(float x)
