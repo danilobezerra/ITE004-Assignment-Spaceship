@@ -30,18 +30,33 @@ public class EnemyEngine : MonoBehaviour,
 
     public void Update()
     {
-        timerH += Time.deltaTime;
-        if( timerH >= nextH ){
-            right = !right;
+	if(spaceship.nearHorBound()){
+	    right = !right;
             timerH = 0F;
             nextH = Random.Range(2F,4.1F);
-        }
-        timerV += Time.deltaTime;
-        if( timerV >= nextV ){
+	}
+	else{
+            timerH += Time.deltaTime;
+            if( timerH >= nextH ){
+                right = !right;
+                timerH = 0F;
+                 nextH = Random.Range(2F,4.1F);
+            }
+	}
+
+	if(spaceship.nearVerBound()){
 	    down = !down;
             timerV = 0F;
             nextV = Random.Range(2F,4.1F);
-        }
+	}
+	else{
+            timerV += Time.deltaTime;
+            if( timerV >= nextV ){
+	        down = !down;
+                timerV = 0F;
+                nextV = Random.Range(2F,4.1F);
+            }
+	}
 
 	if (down) {
             spaceship.MoveVertically(-0.1f);
