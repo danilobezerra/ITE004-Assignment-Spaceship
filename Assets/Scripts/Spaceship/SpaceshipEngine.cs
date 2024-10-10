@@ -5,8 +5,16 @@ using UnityEngine;
 public class SpaceshipEngine : MonoBehaviour,
     IMovementController, IGunController
 {
+    private float intervaloTiro;
+    public float cooldownTiro;
     public Projectile projectilePrefab;
     public Spaceship spaceship;
+
+
+     void Start()
+    {
+        this.intervaloTiro = 0;
+    }
 
     public void OnEnable()
     {
@@ -16,6 +24,13 @@ public class SpaceshipEngine : MonoBehaviour,
 
     public void Update()
     {
+        this.intervaloTiro += Time.deltaTime;
+        if (this.intervaloTiro >= this.cooldownTiro)
+        {
+            this.intervaloTiro = 0;
+            Atirar();
+        }
+
         if (Input.GetButton("Horizontal")) {
             spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
         }
@@ -23,9 +38,11 @@ public class SpaceshipEngine : MonoBehaviour,
         if (Input.GetButton("Vertical")) {
             spaceship.MoveVertically(Input.GetAxis("Vertical"));
         }
-
-        if (Input.GetButtonDown("Fire1")) {
+        void Atirar()
+        {
+            if (Input.GetButton("Fire1")) {
             spaceship.ApplyFire();
+            }
         }
     }
 
