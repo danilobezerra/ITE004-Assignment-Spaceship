@@ -13,4 +13,13 @@ public class Projectile : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    public void OnTriggerEnter2D(Collider2D colisor)
+    {
+        if (colisor.CompareTag("Enemy"))
+        {
+            Destroy(colisor.gameObject);
+            Destroy(this.gameObject);
+        }
+    }
 }
