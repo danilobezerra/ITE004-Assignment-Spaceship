@@ -111,5 +111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40cb5973cf23d5647b3ba7b0ea62ffa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cooldownTiro: 0.25
   projectilePrefab: {fileID: 4953266769923758039, guid: 257a9db8d48a163429e55f57689c7d1a, type: 3}
   spaceship: {fileID: -8370306090929222982}
