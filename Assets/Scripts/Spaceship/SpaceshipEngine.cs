@@ -7,8 +7,8 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
     public Spaceship spaceship;
     [SerializeField] float fireRate = 0.5f, nextFire;
 
-    public float bigProjectileCooldown = 5.0f; // Tempo de cooldown para o projétil maior
-    private float lastBigProjectileTime;      // Tempo do último disparo do projétil maior
+    public float bigProjectileCooldown = 5.0f;
+    private float lastBigProjectileTime;  
 
     public void OnEnable()
     {
@@ -18,7 +18,6 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
 
    public void Update()
 {
-    // Movimentação
     if (Input.GetButton("Horizontal"))
     {
         spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
@@ -40,7 +39,7 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
     if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastBigProjectileTime + bigProjectileCooldown)
     {
         FireBigProjectile();
-        lastBigProjectileTime = Time.time; // Atualiza o tempo do último disparo
+        lastBigProjectileTime = Time.time;
     }
     else if (Input.GetKeyDown(KeyCode.Z) && Time.time < lastBigProjectileTime + bigProjectileCooldown)
     {
@@ -68,7 +67,6 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
 
     public void FireBigProjectile()
     {
-        // Verifica se o prefab do projétil maior está atribuído
         if (bigProjectilePrefab != null)
         {
             Debug.Log("Disparando projétil maior!");
