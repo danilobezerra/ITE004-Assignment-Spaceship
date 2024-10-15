@@ -10,10 +10,13 @@ public class SpaceshipEngine : MonoBehaviour,
     public Projectile projectilePrefab;
     public Spaceship spaceship;
 
+    public Transform[] gunPosition;
+    private Transform actualGun;
 
      void Start()
     {
         this.intervaloTiro = 0;
+        this.actualGun = gunPosition[0];
     }
 
     public void OnEnable()
@@ -60,7 +63,14 @@ public class SpaceshipEngine : MonoBehaviour,
 
     public void Fire()
     {
-        Instantiate(projectilePrefab,
-            transform.position, Quaternion.identity);
+        Instantiate(projectilePrefab, this.actualGun.position, Quaternion.identity);
+        if (this.actualGun == this.gunPosition[0])
+        {
+            this.actualGun = this.gunPosition[1];
+        }
+        else 
+        {
+            this.actualGun = this.gunPosition[0];
+        }
     }
 }
