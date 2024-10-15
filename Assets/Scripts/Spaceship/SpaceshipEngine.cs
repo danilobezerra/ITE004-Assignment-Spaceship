@@ -1,70 +1,142 @@
 using UnityEngine;
+using TMPro;  // Importa a biblioteca do TextMeshPro
 
 public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunController
 {
     public Projectile projectilePrefab;      // Projétil normal
-    public BigProjectile bigProjectilePrefab;   // Projétil maior
+    public Projectile bigProjectilePrefab; // Projétil maior
     public Spaceship spaceship;
-    [SerializeField] float fireRate = 0.5f, nextFire;
+    [SerializeField] float fireRate = 0.5f;  // Taxa de disparo
+    private float nextFire;  // Controla o tempo para o próximo disparo
+    public AudioClip laserLarge_002;  // Som de projétil grande
+    private AudioSource audioSource;  // Referência ao componente AudioSource
 
-    public float bigProjectileCooldown = 5.0f;
-    private float lastBigProjectileTime;  
+    public float bigProjectileCooldown = 5.0f;  // Tempo de recarga para o disparo do projétil grande
+    private float lastBigProjectileTime;  // Controla o tempo do último disparo grande
 
-    public void OnEnable()
+    // Referência ao TextMeshProUGUI que vai mostrar o status do BigProjectile
+    public TextMeshProUGUI bigProjectileStatusText;
+
+    private void OnEnable()
     {
         spaceship.SetMovementController(this);
         spaceship.SetGunController(this);
+
+        // Verifica se há um AudioSource, senão adiciona um
+        if (!audioSource)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Inicializa o texto do status como "Carregando..."
+        if (bigProjectileStatusText != null)
+        {
+            bigProjectileStatusText.text = "Carregando especial...";
+        }
     }
 
-   public void Update()
-{
-    if (Input.GetButton("Horizontal"))
+    private void Update()
     {
-        spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
+        HandleMovement();
+        HandleShooting();
+        UpdateBigProjectileStatus();  // Atualiza o texto do status do BigProjectile
     }
 
-    if (Input.GetButton("Vertical"))
+    // Movimentação da nave
+    private void HandleMovement()
     {
-        spaceship.MoveVertically(Input.GetAxis("Vertical"));
+        // Movimentação horizontal e vertical com as teclas configuradas
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        if (Mathf.Abs(horizontalInput) > 0)  // Evita movimentação nula
+        {
+            spaceship.MoveHorizontally(horizontalInput);
+        }
+
+        if (Mathf.Abs(verticalInput) > 0)  // Evita movimentação nula
+        {
+            spaceship.MoveVertically(verticalInput);
+        }
     }
 
-    // Disparo normal com a tecla espaço, respeitando o fireRate
-    if (Input.GetButtonDown("Fire1") && Time.time >= nextFire)
+    // Controle de disparos
+    private void HandleShooting()
     {
-        spaceship.ApplyFire();
-        nextFire = Time.time + fireRate; // Atualiza o próximo tempo de disparo
+        // Disparo normal com a tecla espaço, respeitando o fireRate
+        if (Input.GetButton("Fire1") && Time.time >= nextFire)
+        {
+            Fire(); // Altera para disparar o projétil normal
+            nextFire = Time.time + fireRate;  // Atualiza o tempo para o próximo disparo
+        }
+
+        // Disparo do projétil maior com a tecla 'Z' e verificação de cooldown
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            if (Time.time >= lastBigProjectileTime + bigProjectileCooldown)
+            {
+                FireBigProjectile();
+                lastBigProjectileTime = Time.time;  // Atualiza o tempo do último disparo grande
+                PlaySound(laserLarge_002);  // Toca o som do disparo grande
+
+                // Atualiza o status do projétil grande para "Carregando..."
+                if (bigProjectileStatusText != null)
+                {
+                    bigProjectileStatusText.text = "Carregando...";
+                }
+            }
+            else
+            {
+                Debug.Log("Carregando especial...");
+            }
+        }
     }
 
-    // Disparo do projétil maior com a tecla 'Z' e verificação de cooldown
-    if (Input.GetKeyDown(KeyCode.Z) && Time.time >= lastBigProjectileTime + bigProjectileCooldown)
+    // Atualiza o status do BigProjectile
+    private void UpdateBigProjectileStatus()
     {
-        FireBigProjectile();
-        lastBigProjectileTime = Time.time;
+        if (bigProjectileStatusText != null)
+        {
+            // Verifica se o BigProjectile está pronto para ser disparado
+            if (Time.time >= lastBigProjectileTime + bigProjectileCooldown)
+            {
+                bigProjectileStatusText.text = "Pressione Z";  // Mostra que está pronto
+            }
+            else
+            {
+                bigProjectileStatusText.text = "Carregando";  // Mostra que está em cooldown
+            }
+        }
     }
-    else if (Input.GetKeyDown(KeyCode.Z) && Time.time < lastBigProjectileTime + bigProjectileCooldown)
-    {
-        Debug.Log("Carregando especial...");
-    }
-}
+
+    // Implementação da movimentação horizontal
     public void MoveHorizontally(float x)
     {
-        var horizontal = Time.deltaTime * x;
-        transform.Translate(new Vector3(horizontal, 0));
+        float horizontalMovement = x * Time.deltaTime * spaceship.GetSpeed();
+        transform.Translate(new Vector3(horizontalMovement, 0, 0));
     }
 
+    // Implementação da movimentação vertical
     public void MoveVertically(float y)
     {
-        var vertical = Time.deltaTime * y;
-        transform.Translate(new Vector3(0, vertical));
+        float verticalMovement = y * Time.deltaTime * spaceship.GetSpeed();
+        transform.Translate(new Vector3(0, verticalMovement, 0));
     }
 
+    // Disparo do projétil normal
     public void Fire()
     {
-        // Disparo do projétil normal
-       Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-        nextFire = Time.time + fireRate;
+        if (projectilePrefab != null)
+        {
+            Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError("Prefab do projétil normal não atribuído!");
+        }
     }
 
+    // Disparo do projétil maior
     public void FireBigProjectile()
     {
         if (bigProjectilePrefab != null)
@@ -75,6 +147,19 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
         else
         {
             Debug.LogError("Prefab do projétil maior não atribuído!");
+        }
+    }
+
+    // Função para tocar sons
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogError("Clip de som ou AudioSource não atribuído!");
         }
     }
 }

@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    public int rows = 5;              
-    public int columns = 11;          
-    public float spacing = 1.5f;    
-    public Vector2 startPosition = new Vector2(-7, 3); 
-    public float screenMargin = 1f;  
-    public float shootInterval = 4f;  
+    public int rows = 5;
+    public int columns = 11;
+    public float spacing = 1.5f;
+    public Vector2 startPosition = new Vector2(-7, 3);
+    public float screenMargin = 1f;
+    public float shootInterval = 4f;
 
     private GameObject[,] enemies;
     private List<GameObject> bottomRowEnemies = new List<GameObject>();
@@ -21,9 +22,17 @@ public class EnemySpawner : MonoBehaviour
         InvokeRepeating("RandomEnemyShoot", shootInterval, shootInterval);
     }
 
+    void Update()
+    {
+        // Verifica se todos os inimigos foram eliminados
+        if (AreAllEnemiesDead())
+        {
+            RestartGame();
+        }
+    }
+
     void AdjustSpawnPosition()
     {
-        // Ajusta a posição de início para centralizar os inimigos na tela
         float screenWidth = Camera.main.aspect * Camera.main.orthographicSize * 2;
         float totalEnemyWidth = (columns - 1) * spacing;
         startPosition.x = -(totalEnemyWidth / 2) + screenMargin;
@@ -36,14 +45,10 @@ public class EnemySpawner : MonoBehaviour
         {
             for (int col = 0; col < columns; col++)
             {
-                // Calcula a posição de cada inimigo baseado na posição inicial e no espaçamento
                 Vector3 enemyPosition = new Vector3(startPosition.x + col * spacing, startPosition.y - row * spacing, 0);
-
-                // Instancia o inimigo e o armazena na matriz
                 GameObject enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
                 enemies[row, col] = enemy;
 
-                // Adiciona os inimigos da fileira mais baixa na lista de disparo
                 if (row == rows - 1)
                 {
                     bottomRowEnemies.Add(enemy);
@@ -51,17 +56,47 @@ public class EnemySpawner : MonoBehaviour
             }
         }
     }
+
+    public bool AreAllEnemiesDead()
+    {
+        foreach (GameObject enemy in enemies)
+        {
+            if (enemy != null)
+            {
+                return false; // Se um inimigo ainda existir, retorna falso
+            }
+        }
+        return true; // Todos os inimigos foram destruídos
+    }
+
+    void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     void RandomEnemyShoot()
     {
         if (bottomRowEnemies.Count > 0)
         {
-            // Seleciona um inimigo aleatório da fileira mais baixa para disparar
-            int randomIndex = Random.Range(0, bottomRowEnemies.Count);
-            GameObject randomEnemy = bottomRowEnemies[randomIndex];
+            int numberOfShooters = Random.Range(1, bottomRowEnemies.Count + 1);
+            List<int> indicesToShoot = new List<int>();
 
-            if (randomEnemy != null)
+            while (indicesToShoot.Count < numberOfShooters)
             {
-                randomEnemy.GetComponent<Enemy>().Bullet();
+                int randomIndex = Random.Range(0, bottomRowEnemies.Count);
+                if (!indicesToShoot.Contains(randomIndex))
+                {
+                    indicesToShoot.Add(randomIndex);
+                }
+            }
+
+            foreach (int index in indicesToShoot)
+            {
+                GameObject shooter = bottomRowEnemies[index];
+                if (shooter != null)
+                {
+                    shooter.GetComponent<Enemy>().Bullet();
+                }
             }
         }
     }
