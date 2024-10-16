@@ -3,37 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpaceshipEngine : MonoBehaviour,
-    IMovementController, IGunController
+    IMovementController
 {
-    private float intervaloTiro;
-    public float cooldownTiro;
-    public Projectile projectilePrefab;
     public Spaceship spaceship;
-
-    public Transform[] gunPosition;
-    private Transform actualGun;
 
      void Start()
     {
-        this.intervaloTiro = 0;
-        this.actualGun = gunPosition[0];
+
     }
 
     public void OnEnable()
     {
         spaceship.SetMovementController(this);
-        spaceship.SetGunController(this);
     }
 
     public void Update()
     {
-        this.intervaloTiro += Time.deltaTime;
-        if (this.intervaloTiro >= this.cooldownTiro)
-        {
-            this.intervaloTiro = 0;
-            Atirar();
-        }
-
         if (Input.GetButton("Horizontal")) {
             spaceship.MoveHorizontally(Input.GetAxis("Horizontal"));
         }
@@ -41,12 +26,7 @@ public class SpaceshipEngine : MonoBehaviour,
         if (Input.GetButton("Vertical")) {
             spaceship.MoveVertically(Input.GetAxis("Vertical"));
         }
-        void Atirar()
-        {
-            if (Input.GetButton("Fire1")) {
-            spaceship.ApplyFire();
-            }
-        }
+        
     }
 
     public void MoveHorizontally(float x)
@@ -59,18 +39,5 @@ public class SpaceshipEngine : MonoBehaviour,
     {
         var vertical = Time.deltaTime * y;
         transform.Translate(new Vector3(0, vertical));
-    }
-
-    public void Fire()
-    {
-        Instantiate(projectilePrefab, this.actualGun.position, Quaternion.identity);
-        if (this.actualGun == this.gunPosition[0])
-        {
-            this.actualGun = this.gunPosition[1];
-        }
-        else 
-        {
-            this.actualGun = this.gunPosition[0];
-        }
     }
 }

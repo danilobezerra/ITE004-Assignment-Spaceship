@@ -9,6 +9,7 @@ public class Spaceship : MonoBehaviour
 
     private IMovementController _movementController;
     private IGunController _gunController;
+    public GunController GunController;
 
     public void SetMovementController(IMovementController movementController)
     {
@@ -49,6 +50,8 @@ public class Spaceship : MonoBehaviour
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        this.GunController.EquipAlterGun();
     }
 
     void LateUpdate() {
