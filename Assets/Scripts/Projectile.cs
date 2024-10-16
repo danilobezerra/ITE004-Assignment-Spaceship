@@ -14,11 +14,12 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void OnTriggerEnter2D(Collider2D colisor)
+    public void OnTriggerEnter2D(Collider2D  collider)
     {
-        if (colisor.CompareTag("Enemy"))
+        if (collider.CompareTag("Enemy"))
         {
-            Destroy(colisor.gameObject);
+            Enemy enemy = collider.GetComponent<Enemy>();
+            enemy.Destruir();
             Destroy(this.gameObject);
         }
     }

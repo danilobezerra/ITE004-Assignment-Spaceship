@@ -25,4 +25,9 @@ public class Enemy : MonoBehaviour
     {
         Destroy(gameObject);
     }
+    public void Destruir()
+    {
+        ControladorPontuacao.Pontuacao++;
+        Destroy(this.gameObject);
+    }
 }

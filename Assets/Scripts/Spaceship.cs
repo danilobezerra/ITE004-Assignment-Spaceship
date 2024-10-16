@@ -11,6 +11,8 @@ public class Spaceship : MonoBehaviour
     private IGunController _gunController;
     public GunController GunController;
 
+    private int vidas;
+
     public void SetMovementController(IMovementController movementController)
     {
         _movementController = movementController;
@@ -44,6 +46,7 @@ public class Spaceship : MonoBehaviour
     }  
 
     void Start() {
+        this.vidas = 5;
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
@@ -52,6 +55,8 @@ public class Spaceship : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
         this.GunController.EquipAlterGun();
+
+        ControladorPontuacao.Pontuacao = 0;
     }
 
     void LateUpdate() {
@@ -66,5 +71,28 @@ public class Spaceship : MonoBehaviour
             _cameraBounds.min.y + spriteHeight, _cameraBounds.max.y - spriteHeight);
 
         transform.position = newPosition;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.CompareTag("Enemy"))
+        {
+            Vida--;
+            Enemy enemy = collider.GetComponent<Enemy>();
+            enemy.Destruir();
+        }
+    }
+
+    public int Vida {
+        get {
+            return this.vidas;
+        }
+        set
+        {
+            this.vidas = value;
+            if (this.vidas < 0){
+                this.vidas = 0;
+            }
+        }
     }
 }

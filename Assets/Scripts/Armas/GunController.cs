@@ -10,7 +10,7 @@ public class GunController : MonoBehaviour
 
     private ArmaBasica _armaAtual;
 
-    void Awake();
+   
     public void EquipAlterGun()
     {
         this.ArmaAtual = this.ArmaDisparoAlternado;
