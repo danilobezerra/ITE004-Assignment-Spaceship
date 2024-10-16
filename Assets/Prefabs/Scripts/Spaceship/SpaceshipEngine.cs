@@ -8,7 +8,7 @@ public class SpaceshipEngine : MonoBehaviour,
     public Projectile projectilePrefab;
     public Spaceship spaceship;
     private bool isTripleShot = false; // Inicia no modo de tiro simples
-    private int maxAmmo = 15; // Quantidade máxima de tiros antes de precisar recarregar
+    private int maxAmmo = 45; // Quantidade máxima de tiros antes de precisar recarregar
     private int currentAmmo;  // Tiros disponíveis atualmente 
     private bool isReloading = false; // Se está recarregando
 
