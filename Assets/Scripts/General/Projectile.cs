@@ -5,8 +5,8 @@ public class Projectile : MonoBehaviour
     public float speed = 25f;
     private Vector3 direction;
 
-    public AudioClip shootSound; // Clip de som para o tiro
-    private AudioSource audioSource; // Componente de AudioSource
+    public AudioClip shootSound; 
+    private AudioSource audioSource;
 
     void Awake()
     {
@@ -20,7 +20,6 @@ public class Projectile : MonoBehaviour
 
     void Start()
     {
-        // Toca o som do tiro
         audioSource.clip = shootSound;
         audioSource.Play();
     }
@@ -39,8 +38,8 @@ public class Projectile : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            Destroy(other.gameObject); // Destrói o inimigo
-            Destroy(gameObject); // Destroi o projétil
+            Destroy(other.gameObject); 
+            Destroy(gameObject); 
         }
     }
 }

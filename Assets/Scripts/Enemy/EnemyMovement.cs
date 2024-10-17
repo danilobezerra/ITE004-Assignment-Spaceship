@@ -2,10 +2,15 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour, IMovementController
 {
-    public float fallSpeed = 2f; // Velocidade de queda padrão
-    public float bottomLimit = -5f; // Limite inferior da queda
+    public float fallSpeed = 2f;
+    public float bottomLimit = -5f;
+    public AudioClip destructionSound;
+    public SpaceshipEngine spaceshipEngine;  // Referência ao script SpaceshipEngine
 
-    public AudioClip destructionSound; // Clip de som para a destruição
+    void Start()
+    {
+        spaceshipEngine = FindObjectOfType<SpaceshipEngine>(); // Encontra o SpaceshipEngine na cena
+    }
 
     void Update()
     {
@@ -25,6 +30,7 @@ public class EnemyMovement : MonoBehaviour, IMovementController
     public void DestroyEnemy()
     {
         PlayDestructionSound();
+        spaceshipEngine.IncreaseScore(); // Aumenta a pontuação ao destruir o inimigo
         Destroy(gameObject);
     }
 

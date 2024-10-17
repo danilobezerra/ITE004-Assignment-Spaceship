@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab; // Prefab do inimigo
-    public float spawnInterval = 2f; // Intervalo entre spawns de grupos de inimigos
-    public int initialSpawnCount = 9; // Número inicial de inimigos a serem spawnados
-    public int groupSize = 4; // Número de inimigos por grupo
-
+    public GameObject enemyPrefab; 
+    public float spawnInterval = 2f; 
+    public int initialSpawnCount = 9; 
+    public int groupSize = 4;
     private List<GameObject> activeEnemies = new List<GameObject>();
 
     void Start()
@@ -37,13 +36,12 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), 5f, 0f); // Y=5 para spawn no topo
+        Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), 5f, 0f);
         GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         activeEnemies.Add(newEnemy);
 
-        // Ajusta a velocidade do inimigo
-        float randomFallSpeed = Random.Range(1f, 5f); // Velocidade aleatória entre 1 e 5
-        newEnemy.GetComponent<EnemyMovement>().fallSpeed = randomFallSpeed; // Ajusta a velocidade do inimigo
+        float randomFallSpeed = Random.Range(1f, 5f);
+        newEnemy.GetComponent<EnemyMovement>().fallSpeed = randomFallSpeed;
     }
 
     public void RemoveEnemy(GameObject enemy)

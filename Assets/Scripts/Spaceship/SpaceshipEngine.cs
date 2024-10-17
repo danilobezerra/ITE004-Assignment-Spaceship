@@ -1,28 +1,79 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 
 public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunController
 {
     public Projectile projectilePrefab;
     public Spaceship spaceship;
-    private int currentAmmo = 10; // Munição atual
-    private int maxAmmo = 10; // Munição máxima
+    public Text scoreText;
+    public Text ammoText;
+    public GameObject infoText;
+
+    private int currentAmmo = 20; 
+    private int maxAmmo = 20;    
+    private int score = 0;       
+
+    private bool isFiringLeft = false;
+    private bool isFiringRight = false;
+    private Coroutine firingCoroutine;
 
     public void OnEnable()
     {
         spaceship.SetMovementController(this);
         spaceship.SetGunController(this);
+        UpdateUI();
+        infoText.SetActive(false); 
     }
 
     public void Update()
     {
         HandleMovement();
-        HandleShooting();
+
+        if (Input.GetMouseButtonDown(0) && !isFiringLeft)
+        {
+            FireInDirection(Vector3.up); 
+        }
+
+        if (Input.GetMouseButton(0) && !isFiringLeft)
+        {
+            isFiringLeft = true;
+            StartCoroutine(FireBurst(5));
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            isFiringLeft = false;
+        }
+
+        if (Input.GetMouseButton(1) && !isFiringRight)
+        {
+            isFiringRight = true;
+            firingCoroutine = StartCoroutine(FireContinuously(Vector3.up));
+        }
+        if (Input.GetMouseButtonUp(1) && isFiringRight)
+        {
+            isFiringRight = false;
+            StopCoroutine(firingCoroutine); 
+        }
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            FireInDirection(Vector3.right);
+            FireInDirection(Vector3.left);  
+        }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload(10); // Recarregar com 10 unidades de munição
+            Reload(20); 
+        }
+
+        if (currentAmmo <= 0)
+        {
+            infoText.SetActive(true); 
+        }
+        else
+        {
+            infoText.SetActive(false); 
         }
     }
 
@@ -38,33 +89,18 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
         }
     }
 
-    private void HandleShooting()
-    {
-        if (Input.GetMouseButtonDown(0)) // Botão esquerdo do mouse
-        {
-            FireInDirection(Vector3.left); // Disparo para a esquerda
-        }
-        if (Input.GetMouseButtonDown(1)) // Botão direito do mouse
-        {
-            FireInDirection(Vector3.right); // Disparo para a direita
-        }
-        if (Input.GetMouseButtonDown(2)) // Botão do meio do mouse
-        {
-            FireMultipleProjectiles(); // Dispara múltiplos projéteis
-        }
-    }
-
     public void Fire()
     {
-        FireInDirection(Vector3.right); // Exemplo: dispara para a direita
+        FireInDirection(Vector3.up);
     }
 
     public void FireMultiple(int shots)
     {
         for (int i = 0; i < shots && currentAmmo > 0; i++)
         {
-            FireInDirection(Vector3.right); // Ajustar a direção se necessário
+            FireInDirection(Vector3.up); 
         }
+        UpdateUI(); 
     }
 
     public void FireInDirection(Vector3 direction)
@@ -74,30 +110,7 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
             var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
             projectile.GetComponent<Projectile>().SetDirection(direction);
             currentAmmo--;
-        }
-    }
-
-    public void FireMultipleProjectiles()
-    {
-        const int totalShots = 5; // Número total de projéteis a disparar
-        float baseSpeed = 30f; // Aumente a velocidade base
-
-        for (int i = 0; i < totalShots; i++)
-        {
-            if (currentAmmo > 0)
-            {
-                // Calcular a direção (para cima e para baixo)
-                Vector3 direction = (i % 2 == 0) ? Vector3.up : Vector3.down;
-
-                // Criar o projétil
-                var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-                projectile.GetComponent<Projectile>().SetDirection(direction);
-
-                // Ajustar a velocidade do projétil
-                projectile.speed = baseSpeed - (i * 5); // Velocidade decrescente (pode ajustar o decremento)
-
-                currentAmmo--;
-            }
+            UpdateUI();
         }
     }
 
@@ -107,6 +120,7 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
         {
             int amountToReload = Mathf.Min(ammo, maxAmmo - currentAmmo);
             currentAmmo += amountToReload;
+            UpdateUI(); 
             return true;
         }
         return false;
@@ -122,5 +136,38 @@ public class SpaceshipEngine : MonoBehaviour, IMovementController, IGunControlle
     {
         var vertical = Time.deltaTime * y;
         transform.Translate(new Vector3(0, vertical));
+    }
+
+    private IEnumerator FireBurst(int shots)
+    {
+        for (int i = 0; i < shots && currentAmmo > 0; i++)
+        {
+            FireInDirection(Vector3.up); 
+            yield return new WaitForSeconds(0.1f); 
+        }
+        isFiringLeft = false;
+        UpdateUI(); 
+    }
+
+    private IEnumerator FireContinuously(Vector3 direction)
+    {
+        while (true)
+        {
+            FireInDirection(direction); 
+            yield return new WaitForSeconds(0.2f); 
+            UpdateUI(); 
+        }
+    }
+
+    private void UpdateUI()
+    {
+        scoreText.text = "Pontuação: " + score;
+        ammoText.text = "Munição: " + currentAmmo;
+    }
+
+    public void IncreaseScore()
+    {
+        score++;
+        UpdateUI();
     }
 }
