@@ -101,9 +101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbab164c025612a459d168bec0535d33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7.5
-  damagedMultiplier: 0.5
-  idleSpeed: 0.2
+  speed: 10
+  damagedMultiplier: 0.8
+  idleSpeed: 0.6
 --- !u!114 &1523643253769847770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +118,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: -4646460885823416445, guid: 3b1062fc37c66154e84d2a816f546d0c, type: 3}
   spaceship: {fileID: -8370306090929222982}
+  threeWaySound: {fileID: 8300000, guid: e79c1ddfcebd28a49bfa85d85a35d615, type: 3}
+  shootingSound: {fileID: 8300000, guid: 5fc033370a37d6c418379057811f9103, type: 3}
+  reloadingSound: {fileID: 8300000, guid: 2454f98658a778342a6b96c34b6378c9, type: 3}
+  ammoText: {fileID: 0}
 --- !u!60 &8384144263729630730
 PolygonCollider2D:
   m_ObjectHideFlags: 0
