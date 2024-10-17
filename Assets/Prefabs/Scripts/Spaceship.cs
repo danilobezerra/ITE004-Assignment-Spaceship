@@ -3,12 +3,16 @@ using UnityEngine;
 public class Spaceship : MonoBehaviour
 {
     public float speed;
+    public float damagedMultiplier = 0.5f;
+    public float idleSpeed = 0.2f;
 
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
 
     private IMovementController _movementController;
     private IGunController _gunController;
+
+    private SpaceshipState _currentState = SpaceshipState.Normal;
 
     public void SetMovementController(IMovementController movementController)
     {
@@ -18,6 +22,11 @@ public class Spaceship : MonoBehaviour
     public void SetGunController(IGunController gunController)
     {
         _gunController = gunController;
+    }
+
+    public void SetState(SpaceshipState newState)
+    {
+        _currentState = newState;
     }
 
     public void MoveHorizontally(float x)
@@ -32,17 +41,26 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
         _gunController.Fire();
     }
 
     public float GetSpeed()
     {
-        // TODO: Controlar velocidade com base no estado da nave
-        return speed;
-    }  
+        switch (_currentState)
+        {
+            case SpaceshipState.Normal:
+                return speed;
+            case SpaceshipState.Damaged:
+                return speed * damagedMultiplier;
+            case SpaceshipState.Idle:
+                return idleSpeed;
+            default:
+                return speed;
+        }
+    }
 
-    void Start() {
+    void Start()
+    {
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
@@ -51,7 +69,8 @@ public class Spaceship : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void LateUpdate() {
+    void LateUpdate()
+    {
         var newPosition = transform.position;
 
         var spriteWidth = _spriteRenderer.sprite.bounds.extents.x;
@@ -64,4 +83,20 @@ public class Spaceship : MonoBehaviour
 
         transform.position = newPosition;
     }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy") == collision.gameObject.CompareTag("Player"))
+        {
+            SetState(SpaceshipState.Damaged);
+            Debug.Log("Nave colidiu com o inimigo! Estado alterado para 'Damaged'.");
+        }
+    }
+}
+
+public enum SpaceshipState
+{
+    Normal,
+    Damaged,
+    Idle
 }
