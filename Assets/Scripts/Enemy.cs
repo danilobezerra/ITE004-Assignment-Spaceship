@@ -6,9 +6,9 @@ public class Enemy : MonoBehaviour
     private int ammo;
     private float burstCooldown;
     private bool burstOn;
-
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
+    private AudioSource audioSource;
 
     private IMovementController _movementController;
     private IGunController _gunController;
@@ -68,8 +68,8 @@ public class Enemy : MonoBehaviour
 
     public bool nearHorBound(){
 	var spriteWidth = _spriteRenderer.sprite.bounds.extents.x;
-	return transform.position.x > _cameraBounds.max.x - spriteWidth
-		|| transform.position.x < _cameraBounds.min.x + spriteWidth;
+	return transform.position.x > _cameraBounds.max.x - spriteWidth/2
+		|| transform.position.x < _cameraBounds.min.x + spriteWidth/2;
     }
     public bool nearVerBound(){
 	var spriteHeight = _spriteRenderer.sprite.bounds.extents.y;
@@ -97,8 +97,10 @@ public class Enemy : MonoBehaviour
         if( burstOn && burstCooldown <= 0.0F && ammo > 0 ){
             ammo--;
             _gunController.Fire();
+       
             burstCooldown = 0.08F;
             Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
         }
     }
+
 }

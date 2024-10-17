@@ -32,7 +32,8 @@ public class Spawner : MonoBehaviour
 	    var spriteWidth = _enemySpriteRenderer.sprite.bounds.extents.x;
             Instantiate(enemyPrefab, new Vector3(Random.Range(-width+spriteWidth,width-spriteWidth),height-spriteHeight/2f), Quaternion.identity);
             timer = 0F;
-            next = Random.Range(6F,12F);
+            next = Random.Range(0.6F,1.2F);
         }
     }
+
 }

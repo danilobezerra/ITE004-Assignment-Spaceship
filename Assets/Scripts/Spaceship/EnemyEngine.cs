@@ -5,62 +5,77 @@ using UnityEngine;
 public class EnemyEngine : MonoBehaviour,
     IMovementController, IGunController
 {
-    public Projectile projectilePrefab;
+    public EnemyProjectile projectilePrefab;
     public Enemy spaceship;
     
+    private AudioSource audioSource;
     private float timerH;
     private float nextH;
     private float timerV;
     private float nextV;
+    private float timerFire;
+    private float nextFire;
     private bool right;
     private bool down;
 
     public void OnEnable()
     {
+        
+        audioSource = GetComponent<AudioSource>();
         timerH = 0F;
         nextH = 2F;
         timerV = 0F;
         nextV = 2F;
+        timerFire = 0F;
+        nextFire = 0.5F;
 
         right = Random.Range(0f,1f) > 0.5f;
-	down = true;
+	    down = true;
         spaceship.SetMovementController(this);
         spaceship.SetGunController(this);
     }
 
     public void Update()
     {
-	if(spaceship.nearHorBound()){
-	    right = !right;
+        timerFire += Time.deltaTime;
+        if( timerFire >= nextFire ){
+            audioSource.Play();
+            Fire();
+            timerFire = 0F;
+            nextFire = Random.Range(0F,1F);
+        }
+
+        if(spaceship.nearHorBound()){
+            right = !right;
             timerH = 0F;
             nextH = Random.Range(2F,4.1F);
-	}
-	else{
+        }
+        else{
             timerH += Time.deltaTime;
             if( timerH >= nextH ){
                 right = !right;
                 timerH = 0F;
-                 nextH = Random.Range(2F,4.1F);
+                nextH = Random.Range(2F,4.1F);
             }
-	}
+        }
 
-	if(spaceship.nearVerBound()){
-	    down = !down;
+        if(spaceship.nearVerBound()){
+            down = !down;
             timerV = 0F;
             nextV = Random.Range(2F,4.1F);
-	}
-	else{
+        }
+        else{
             timerV += Time.deltaTime;
             if( timerV >= nextV ){
-	        down = !down;
+                down = !down;
                 timerV = 0F;
                 nextV = Random.Range(2F,4.1F);
             }
-	}
-
-	if (down) {
-            spaceship.MoveVertically(-0.1f);
         }
+
+        if (down) {
+                spaceship.MoveVertically(-0.1f);
+            }
         else{
             spaceship.MoveVertically(0.1f);
         }

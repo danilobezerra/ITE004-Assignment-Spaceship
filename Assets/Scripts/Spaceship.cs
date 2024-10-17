@@ -6,6 +6,9 @@ public class Spaceship : MonoBehaviour
     private int ammo;
     private float burstCooldown;
     private bool burstOn;
+    private int health;
+
+    private AudioSource audioSource;
 
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
@@ -37,6 +40,7 @@ public class Spaceship : MonoBehaviour
     {
 	if( ammo > 0 ){
 	    ammo--;
+        audioSource.Play();
             _gunController.Fire();
 	}
 	Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
@@ -68,6 +72,7 @@ public class Spaceship : MonoBehaviour
 
     void Start() {
         var height = Camera.main.orthographicSize * 2f;
+        audioSource = GetComponent<AudioSource>();
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
 	ammo = 30;
@@ -76,6 +81,8 @@ public class Spaceship : MonoBehaviour
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        health = 10;
     }
 
     void LateUpdate() {
@@ -91,15 +98,33 @@ public class Spaceship : MonoBehaviour
 
         transform.position = newPosition;
 
-	if( burstCooldown > 0.0F ){
-	    burstCooldown -= Time.deltaTime;
-	}
+        if( burstCooldown > 0.0F ){
+            burstCooldown -= Time.deltaTime;
+        }
 
-	if( burstOn && burstCooldown <= 0.0F && ammo > 0 ){
-	    ammo--;
-	    _gunController.Fire();
-	    burstCooldown = 0.08F;
-	    Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
-	}
+        if( burstOn && burstCooldown <= 0.0F && ammo > 0 ){
+            ammo--;
+            _gunController.Fire();
+            audioSource.Play();
+            burstCooldown = 0.08F;
+            Debug.Log( "Ammo: " + ammo + "  Burst: " + burstOn );
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collider){
+        if( collider.CompareTag("enemy") ){
+            Enemy enemy = collider.GetComponent<Enemy>();
+            Destroy(enemy.gameObject);
+            Destroy(this.gameObject);
+        }
+
+    }
+
+    public void Damage(){
+        health--;
+        speed -= 0.5F;
+        Debug.Log("health:"+health);
+        if( health <= 0 )
+            Destroy(this.gameObject);
     }
 }
