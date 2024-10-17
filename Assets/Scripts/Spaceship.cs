@@ -32,13 +32,11 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
         _gunController.Fire();
     }
 
     public float GetSpeed()
     {
-        // TODO: Controlar velocidade com base no estado da nave
         return speed;
     }  
 
