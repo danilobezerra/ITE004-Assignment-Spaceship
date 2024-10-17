@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpaceshipEngine : MonoBehaviour,
@@ -7,6 +6,8 @@ public class SpaceshipEngine : MonoBehaviour,
 {
     public Projectile projectilePrefab;
     public Spaceship spaceship;
+    public int amno = 3;
+  
 
     public void OnEnable()
     {
@@ -27,9 +28,15 @@ public class SpaceshipEngine : MonoBehaviour,
         if (Input.GetButtonDown("Fire1")) {
             spaceship.ApplyFire();
         }
-    }
 
-    public void MoveHorizontally(float x)
+        if (Input.GetButtonDown("Fire2"))
+        {
+            spaceship.ApplyPowerFire();
+        }
+    }
+    
+
+        public void MoveHorizontally(float x)
     {
         var horizontal = Time.deltaTime * x;
         transform.Translate(new Vector3(horizontal, 0));
@@ -43,7 +50,47 @@ public class SpaceshipEngine : MonoBehaviour,
 
     public void Fire()
     {
-        Instantiate(projectilePrefab,
+        
+        
+        if(spaceship.maxAmmo < 1 )
+        {
+            if (!spaceship.recarregando)
+            {
+                StartCoroutine(spaceship.UseAmmo());
+            }
+           
+        }
+        else
+        {
+            spaceship.maxAmmo--;
+            Instantiate(projectilePrefab,
             transform.position, Quaternion.identity);
+        }
+
+
     }
+
+    public IEnumerator PowerFire()
+    {
+        if (spaceship.maxAmmo < 1)
+        {
+            if (!spaceship.recarregando)
+            {
+                StartCoroutine(spaceship.UseAmmo());
+            }
+
+        }
+        else
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                spaceship.maxAmmo--;
+                yield return new WaitForSeconds(0.05f);
+                Instantiate(projectilePrefab,
+            transform.position, Quaternion.identity);
+            }
+            
+        }
+    }
+
 }
