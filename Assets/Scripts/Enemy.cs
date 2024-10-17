@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 using System.Collections;
 using UnityEngine;
 
@@ -47,3 +48,22 @@ public class Enemy : MonoBehaviour
     }
 
 }
+=======
+using UnityEngine;
+
+public class Enemy : MonoBehaviour
+{
+    public float speed = 5f;
+
+    void Update()
+    {
+        transform.Translate(Time.deltaTime * speed * Vector3.up);
+        
+        if(transform.position.y < -5f)
+        {
+            transform.position = new Vector3(Random.Range(-8f, 8f), 7, 0);
+        }
+    }
+    
+}
+>>>>>>> ee1b2f18a5d430bda6be252274d79a1f6907e1f5

@@ -11,11 +11,17 @@ GameObject:
   - component: {fileID: 8495048431377979800}
   - component: {fileID: 3817955343496674744}
   - component: {fileID: 6890658375633338817}
+<<<<<<< HEAD
   - component: {fileID: 198936097482323967}
   - component: {fileID: 2823200818296000760}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
+=======
+  m_Layer: 0
+  m_Name: Enemy
+  m_TagString: Untagged
+>>>>>>> ee1b2f18a5d430bda6be252274d79a1f6907e1f5
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +82,11 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+<<<<<<< HEAD
   m_Sprite: {fileID: 21300000, guid: d5f764087c81b1d4bacb4ae5a1b4d3e6, type: 3}
+=======
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+>>>>>>> ee1b2f18a5d430bda6be252274d79a1f6907e1f5
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -100,6 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+<<<<<<< HEAD
   explosaoClip: {fileID: 8300000, guid: fa09606d9836f0c44aeed98505b9745b, type: 3}
 --- !u!61 &198936097482323967
 BoxCollider2D:
@@ -173,3 +184,5 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+=======
+>>>>>>> ee1b2f18a5d430bda6be252274d79a1f6907e1f5
