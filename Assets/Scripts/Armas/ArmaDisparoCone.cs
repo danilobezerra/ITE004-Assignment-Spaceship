@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ArmaDisparoCone : ArmaBasica
 {
-    [SerializeField, Range(0f, 30f)]
+    [SerializeField]
     private float anguloEntreDisparos;
 
-    [SerializeField, Range(1, 30)]
+    [SerializeField]
     private int qtdTiros;
 
     public override void Fire()

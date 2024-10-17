@@ -44,7 +44,6 @@ public class Spaceship : MonoBehaviour
         // TODO: Controlar velocidade com base no estado da nave
         return speed;
     }
-    //-----------------------------------------------------------------------------------------
     void Start()
     {
         this.vidas = 5;

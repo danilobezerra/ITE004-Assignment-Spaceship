@@ -16,6 +16,7 @@ public class GunController : MonoBehaviour
     void Awake()
     {
         ArmaDisparoAlternado.Desativar();
+        ArmaDisparoCone.Desativar();
     }
 
     public void EquipAlterGun()

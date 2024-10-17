@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     public Rigidbody2D rigidbody2D;
     public float speed = 25f;
+    public GameObject explosao;
 
     void Update()
     {
@@ -28,6 +29,9 @@ public class Projectile : MonoBehaviour
     {
         if (collider.CompareTag("Enemy"))
         {
+            GameObject preFab = Instantiate(explosao, new Vector3(this.gameObject.transform.position.x,
+            this.gameObject.transform.position.y, this.gameObject.transform.position.z), Quaternion.identity);
+            Destroy(preFab.gameObject, 2f);
             Enemy enemy = collider.GetComponent<Enemy>();
             enemy.Destruir();
             Destroy(this.gameObject);
