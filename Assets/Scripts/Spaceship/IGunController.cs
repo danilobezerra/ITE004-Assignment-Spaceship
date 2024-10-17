@@ -1,4 +1,4 @@
 public interface IGunController
 {
-    void Fire();
+    public void Fire();
 }
