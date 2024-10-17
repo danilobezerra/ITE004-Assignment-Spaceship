@@ -43,9 +43,10 @@ public class Spaceship : MonoBehaviour
     {
         // TODO: Controlar velocidade com base no estado da nave
         return speed;
-    }  
-
-    void Start() {
+    }
+    //-----------------------------------------------------------------------------------------
+    void Start()
+    {
         this.vidas = 5;
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
@@ -54,9 +55,26 @@ public class Spaceship : MonoBehaviour
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        this.GunController.EquipAlterGun();
+        EquipAlterGun();
 
         ControladorPontuacao.Pontuacao = 0;
+    }
+
+    public void EquipAlterGun()
+    {
+        this.GunController.EquipAlterGun();
+    }
+
+    public void EquipConeGun()
+    {
+        this.GunController.EquipConeGun();
+    }
+
+    void ColetarPowerUp(ColectPower powerUp)
+    {
+        PowerEffect powerEffect = powerUp.PowerEffect;
+        powerEffect.Aplicar(this);
+        powerUp.Coletar();
     }
 
     void LateUpdate() {
@@ -80,6 +98,10 @@ public class Spaceship : MonoBehaviour
             Vida--;
             Enemy enemy = collider.GetComponent<Enemy>();
             enemy.Destruir();
+        } else if (collider.CompareTag("PowerUp"))
+        {
+            ColectPower powerUp = collider.GetComponent<ColectPower>();
+            ColetarPowerUp(powerUp);
         }
     }
 

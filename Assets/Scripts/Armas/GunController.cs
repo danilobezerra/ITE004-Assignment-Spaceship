@@ -8,12 +8,24 @@ public class GunController : MonoBehaviour
     [SerializeField]
     private ArmaDisparoAlternado ArmaDisparoAlternado;
 
+    [SerializeField]
+    private ArmaDisparoCone ArmaDisparoCone;
+
     private ArmaBasica _armaAtual;
 
-   
+    void Awake()
+    {
+        ArmaDisparoAlternado.Desativar();
+    }
+
     public void EquipAlterGun()
     {
         this.ArmaAtual = this.ArmaDisparoAlternado;
+    }
+
+    public void EquipConeGun()
+    {
+        this.ArmaAtual = this.ArmaDisparoCone;
     }
 
     private ArmaBasica ArmaAtual

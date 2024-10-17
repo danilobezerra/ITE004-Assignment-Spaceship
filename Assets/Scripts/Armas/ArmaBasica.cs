@@ -42,10 +42,9 @@ public abstract class ArmaBasica : MonoBehaviour, IGunController
             spaceship.ApplyFire();
         }
     }
-
-    protected void CriarTiro(Vector2 position)
+    protected Projectile CriarTiro(Vector2 position)
     {
-        Instantiate(projectilePrefab, position, Quaternion.identity);
+        return Instantiate(projectilePrefab, position, Quaternion.identity);
     }
 
     public abstract void Fire();

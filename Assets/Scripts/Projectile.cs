@@ -2,11 +2,21 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public Rigidbody2D rigidbody2D;
     public float speed = 25f;
 
     void Update()
     {
-        transform.Translate(Time.deltaTime * speed * Vector3.up);
+        Direcao = this.transform.up;
+    }
+
+    public Vector2 Direcao
+    {
+        set
+        {
+            this.transform.up = value;
+            this.rigidbody2D.velocity = this.transform.up * this.speed;
+        }
     }
 
     void OnBecameInvisible()
