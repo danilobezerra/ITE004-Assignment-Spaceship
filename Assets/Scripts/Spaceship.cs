@@ -38,6 +38,11 @@ public class Spaceship : MonoBehaviour
         // TODO: Recarregar
         _gunController.Fire();
     }
+    public void DiminuirVelocidade(float quantidade)
+    {
+        speed -= quantidade;
+        if (speed < 0) speed = 4;
+    }
 
     public float GetSpeed()
     {
@@ -46,7 +51,7 @@ public class Spaceship : MonoBehaviour
     }
     void Start()
     {
-        this.vidas = 5;
+        this.vidas = 3;
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
@@ -114,6 +119,15 @@ public class Spaceship : MonoBehaviour
             if (this.vidas < 0){
                 this.vidas = 0;
             }
+            if (vidas <= 0)
+            {
+                GameOver();
+            }
         }
+    }
+    private void GameOver()
+    {
+        Time.timeScale = 0;
+        Debug.Log("Game Over!");
     }
 }
