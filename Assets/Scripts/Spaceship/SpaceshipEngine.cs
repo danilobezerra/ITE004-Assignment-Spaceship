@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpaceshipEngine : MonoBehaviour,
-    IMovementController, IGunController
+    IMovementController
 {
-    public Projectile projectilePrefab;
     public Spaceship spaceship;
+
+     void Start()
+    {
+
+    }
 
     public void OnEnable()
     {
         spaceship.SetMovementController(this);
-        spaceship.SetGunController(this);
     }
 
     public void Update()
@@ -23,10 +26,7 @@ public class SpaceshipEngine : MonoBehaviour,
         if (Input.GetButton("Vertical")) {
             spaceship.MoveVertically(Input.GetAxis("Vertical"));
         }
-
-        if (Input.GetButtonDown("Fire1")) {
-            spaceship.ApplyFire();
-        }
+        
     }
 
     public void MoveHorizontally(float x)
@@ -39,11 +39,5 @@ public class SpaceshipEngine : MonoBehaviour,
     {
         var vertical = Time.deltaTime * y;
         transform.Translate(new Vector3(0, vertical));
-    }
-
-    public void Fire()
-    {
-        Instantiate(projectilePrefab,
-            transform.position, Quaternion.identity);
     }
 }

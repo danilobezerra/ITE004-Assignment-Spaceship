@@ -9,6 +9,9 @@ public class Spaceship : MonoBehaviour
 
     private IMovementController _movementController;
     private IGunController _gunController;
+    public GunController GunController;
+
+    private int vidas;
 
     public void SetMovementController(IMovementController movementController)
     {
@@ -35,20 +38,47 @@ public class Spaceship : MonoBehaviour
         // TODO: Recarregar
         _gunController.Fire();
     }
+    public void DiminuirVelocidade(float quantidade)
+    {
+        speed -= quantidade;
+        if (speed < 0) speed = 4;
+    }
 
     public float GetSpeed()
     {
         // TODO: Controlar velocidade com base no estado da nave
         return speed;
-    }  
-
-    void Start() {
+    }
+    void Start()
+    {
+        this.vidas = 3;
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        EquipAlterGun();
+
+        ControladorPontuacao.Pontuacao = 0;
+    }
+
+    public void EquipAlterGun()
+    {
+        this.GunController.EquipAlterGun();
+    }
+
+    public void EquipConeGun()
+    {
+        this.GunController.EquipConeGun();
+    }
+
+    void ColetarPowerUp(ColectPower powerUp)
+    {
+        PowerEffect powerEffect = powerUp.PowerEffect;
+        powerEffect.Aplicar(this);
+        powerUp.Coletar();
     }
 
     void LateUpdate() {
@@ -63,5 +93,41 @@ public class Spaceship : MonoBehaviour
             _cameraBounds.min.y + spriteHeight, _cameraBounds.max.y - spriteHeight);
 
         transform.position = newPosition;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.CompareTag("Enemy"))
+        {
+            Vida--;
+            Enemy enemy = collider.GetComponent<Enemy>();
+            enemy.Destruir();
+        } else if (collider.CompareTag("PowerUp"))
+        {
+            ColectPower powerUp = collider.GetComponent<ColectPower>();
+            ColetarPowerUp(powerUp);
+        }
+    }
+
+    public int Vida {
+        get {
+            return this.vidas;
+        }
+        set
+        {
+            this.vidas = value;
+            if (this.vidas < 0){
+                this.vidas = 0;
+            }
+            if (vidas <= 0)
+            {
+                GameOver();
+            }
+        }
+    }
+    private void GameOver()
+    {
+        Time.timeScale = 0;
+        Debug.Log("Game Over!");
     }
 }
