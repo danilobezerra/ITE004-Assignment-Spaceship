@@ -3,12 +3,18 @@ using UnityEngine;
 public class Spaceship : MonoBehaviour
 {
     public float speed;
+    public float damagedMultiplier = 0.8f;
+    public float idleSpeed = 0.6f;
 
     private Bounds _cameraBounds;
     private SpriteRenderer _spriteRenderer;
 
+    //public Sprite damagedSprite;
+
     private IMovementController _movementController;
     private IGunController _gunController;
+
+    private SpaceshipState _currentState = SpaceshipState.Normal;
 
     public void SetMovementController(IMovementController movementController)
     {
@@ -18,6 +24,12 @@ public class Spaceship : MonoBehaviour
     public void SetGunController(IGunController gunController)
     {
         _gunController = gunController;
+    }
+
+    public void SetState(SpaceshipState newState)
+    {
+        _currentState = newState;
+        ChangeColorBasedOnState();  // Muda a cor sempre que o estado mudar
     }
 
     public void MoveHorizontally(float x)
@@ -32,26 +44,37 @@ public class Spaceship : MonoBehaviour
 
     public void ApplyFire()
     {
-        // TODO: Recarregar
         _gunController.Fire();
     }
 
     public float GetSpeed()
     {
-        // TODO: Controlar velocidade com base no estado da nave
-        return speed;
-    }  
+        switch (_currentState)
+        {
+            case SpaceshipState.Normal:
+                return speed;
+            case SpaceshipState.Damaged:
+                return speed * damagedMultiplier;
+            case SpaceshipState.Idle:
+                return speed * idleSpeed;
+            default:
+                return speed;
+        }
+    }
 
-    void Start() {
+    void Start()
+    {
         var height = Camera.main.orthographicSize * 2f;
         var width = height * Camera.main.aspect;
         var size = new Vector3(width, height);
         _cameraBounds = new Bounds(Vector3.zero, size);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        ChangeColorBasedOnState();
     }
 
-    void LateUpdate() {
+    void LateUpdate()
+    {
         var newPosition = transform.position;
 
         var spriteWidth = _spriteRenderer.sprite.bounds.extents.x;
@@ -64,4 +87,55 @@ public class Spaceship : MonoBehaviour
 
         transform.position = newPosition;
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            switch (_currentState)
+            {
+                case SpaceshipState.Normal:
+                    SetState(SpaceshipState.Damaged);
+                    Debug.Log("Nave colidiu com o inimigo! Estado alterado para 'Damaged'.");
+                    break;
+
+                case SpaceshipState.Damaged:
+                    SetState(SpaceshipState.Idle);
+                    Debug.Log("Nave colidiu com o inimigo! Estado alterado para 'Critical'.");
+                    break;
+
+                case SpaceshipState.Idle:
+                    Destroy(gameObject);
+                    Debug.Log("Nave colidiu com o inimigo! A Nave explodiu.");
+                    break;
+            }
+        }
+    }
+
+    void ChangeColorBasedOnState()
+    {
+        switch (_currentState)
+        {
+            case SpaceshipState.Normal:
+                _spriteRenderer.color = Color.white;
+               // _spriteRenderer.sprite = damagedSprite;
+
+                break;
+
+            case SpaceshipState.Damaged:
+                _spriteRenderer.color = Color.grey;
+                break;
+
+            case SpaceshipState.Idle:
+                _spriteRenderer.color = Color.red;
+                break;
+        }
+    }
+}
+
+public enum SpaceshipState
+{
+    Normal,
+    Damaged,
+    Idle
 }
